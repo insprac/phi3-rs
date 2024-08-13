@@ -1,0 +1,15 @@
+[package]
+name = "phi3"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "phi3"
+path = "src/bin.rs"
+
+[dependencies]
+thiserror = "1"
+candle-core = "0.6"
+candle-transformers = "0.6"
+hf-hub = { version = "0.3", features = ["tokio"] }
+tokenizers = "0.20"
