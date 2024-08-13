@@ -33,7 +33,7 @@ pub enum Error {
 /// A convenience type wrapping the standard Result with our custom Error.
 pub type Result<T> = std::result::Result<T, Error>;
 
-/// Contains all available configuration options for running Phi3 inference.
+/// Contains all available configuration options for running Phi-3 inference.
 ///
 /// # Examples
 ///
@@ -99,7 +99,7 @@ pub struct Phi3 {
 }
 
 impl Phi3 {
-    /// This function will download the Phi3 model weights and tokenizer if they aren't already
+    /// This function will download the Phi-3 model weights and tokenizer if they aren't already
     /// available, this can take quite a while even though it's a small model.
     ///
     /// When using this in a production environment weights and the tokenizer should ideally be
@@ -135,6 +135,24 @@ impl Phi3 {
         })
     }
 
+    /// Run inference given a prompt, stops when `sample_len` in `Phi3Config` is reached or EOS
+    /// token is output.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Because of the training data used in Phi-3 the following prompt structure is
+    /// // recommended for the best results.
+    /// let prompt = "<|user|>\nWrite a haiku about rust software dev<|end|>\n<|assistant|>\n";
+    /// let phi3 = Phi3::init(Phi3Config::default()).expect("failed to initialize");
+    /// let output = phi3.complete(prompt).expect("failed to run inference");
+    /// println!("{output}");
+    /// ```
+    ///
+    /// # Future Improvements
+    ///
+    /// This should return a stream so users don't have to wait for the entire sequence to finish
+    /// to start using the output.
     pub fn complete(&mut self, prompt: &str) -> Result<String> {
         let tokens = self.tokenizer.encode(prompt, true)?;
         let tokens = tokens.get_ids();
