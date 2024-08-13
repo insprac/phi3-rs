@@ -145,7 +145,11 @@ impl Phi3 {
             LogitsProcessor::new(self.config.seed, self.config.temperature, self.config.top_p);
 
         let mut next_token = *tokens.last().ok_or(Error::MissingLastToken)?;
-        let eos_token = *self.tokenizer.get_vocab(true).get("<|endoftext|>").ok_or(Error::MissingEosToken)?;
+        let eos_token = *self
+            .tokenizer
+            .get_vocab(true)
+            .get("<|endoftext|>")
+            .ok_or(Error::MissingEosToken)?;
         let mut prev_text_len = 0;
 
         for (pos, &token) in tokens.iter().enumerate() {
@@ -163,7 +167,6 @@ impl Phi3 {
 
         // Run inference until `sample_len` is reached or EOS token is output.
         for index in 0..to_sample {
-            println!("index: {index}");
             let input = Tensor::new(&[next_token], &self.config.device)?.unsqueeze(0)?;
             let logits = self.model.forward(&input, tokens.len() + index)?;
             let logits = logits.squeeze(0)?;
@@ -185,7 +188,6 @@ impl Phi3 {
 
             if decoded_text.len() > prev_text_len {
                 let new_text = &decoded_text[prev_text_len..];
-                println!("token: {new_text}");
                 output_text.push_str(new_text);
                 prev_text_len = decoded_text.len();
             }
