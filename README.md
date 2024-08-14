@@ -8,6 +8,17 @@ with the library.
 
 This project is simply a learning experiment and I don't plan on maintaining it beyond my personal use.
 
+## Using the GPU
+
+CUDA support is not compiled by default, to enable it use the feature flag `cuda`.
+
+```bash
+# To compile the binary with CUDA support
+cargo build --release --features cuda
+# And to run it directly with Cargo
+cargo run --features cuda
+```
+
 ## Library Usage
 
 A simple example using the default configuration options:
