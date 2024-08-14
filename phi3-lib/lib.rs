@@ -49,6 +49,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// # Future Additions
 ///
 /// A builder may be implemented for another option when constructing the config.
+#[derive(Debug, Clone)]
 pub struct Phi3Config {
     /// Specifies the maximum length of the generated text.
     pub sample_len: usize,
@@ -143,8 +144,8 @@ impl Phi3 {
     /// ```
     /// // Because of the training data used in Phi-3 the following prompt structure is
     /// // recommended for the best results.
-    /// let prompt = "<|user|>\nWrite a haiku about rust software dev<|end|>\n<|assistant|>\n";
-    /// let phi3 = Phi3::init(Phi3Config::default()).expect("failed to initialize");
+    /// let prompt = "<|user|>\nWrite a haiku about Rust software dev<|end|>\n<|assistant|>\n";
+    /// let mut phi3 = Phi3::init(Phi3Config::default()).expect("failed to initialize");
     /// let output = phi3.complete(prompt).expect("failed to run inference");
     /// println!("{output}");
     /// ```
@@ -216,5 +217,61 @@ impl Phi3 {
         }
 
         Ok(output_text)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Keep a consistent configuration across tests for deterministic results.
+    fn config() -> Phi3Config {
+        Phi3Config {
+            temperature: Some(0.0),
+            sample_len: 100,
+            top_p: None,
+            repeat_last_n: 64,
+            repeat_penalty: 1.2,
+            seed: 1000000,
+            device: Device::Cpu,
+        }
+    }
+
+    #[test]
+    fn outputs_as_expected() {
+        let prompt = r#"
+        <|user|>
+        1 + 1<|end|>
+        <|assistant|>
+        2<|end|>
+        <|user|>
+        1 + 5<|end|>
+        <|assistant|>
+        6<|end|>
+        <|user|>
+        2 + 10<|end|>
+        <|assistant|>
+        "#.trim_start();
+
+        let mut config = config();
+        // Struggled to find a prompt that would be short where the model doesn't keep going
+        // excessively so setting the sample length will only get the answer we expect.
+        config.sample_len = 2;
+        let mut phi3 = Phi3::init(config).expect("failed to init");
+        let output = phi3.complete(prompt).expect("failed to run inference");
+        assert_eq!(&output, "12");
+    }
+
+    #[test]
+    fn stops_when_sample_len_is_reached() {
+        // Set a tiny sample length for faster testing.
+        let mut config = config();
+        config.sample_len = 4;
+
+        let prompt = "<|user|>\nTell me a story<|end|>\n<|assistant|>\nOnce upon a time, ";
+
+        let mut phi3 = Phi3::init(config).expect("failed to init");
+        let output = phi3.complete(prompt).expect("failed to run inference");
+        assert_eq!(&output, "in a small village");
     }
 }
