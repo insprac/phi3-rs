@@ -46,7 +46,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 ///     sample_len: 500,
 ///     device: Device::Cpu,
 ///     ..Default::default()
-/// }
+/// };
 /// ```
 ///
 /// # Future Additions
