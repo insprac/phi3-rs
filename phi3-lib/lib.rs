@@ -38,6 +38,9 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// # Examples
 ///
 /// ```
+/// use phi3::Phi3Config;
+/// use candle_core::Device;
+///
 /// let config = Phi3Config {
 ///     temperature: Some(0.5),
 ///     sample_len: 500,
@@ -142,11 +145,13 @@ impl Phi3 {
     /// # Example
     ///
     /// ```
+    /// use phi3::{Phi3, Phi3Config};
+    ///
     /// // Because of the training data used in Phi-3 the following prompt structure is
     /// // recommended for the best results.
     /// let prompt = "<|user|>\nWrite a haiku about Rust software dev<|end|>\n<|assistant|>\n";
-    /// let mut phi3 = Phi3::init(Phi3Config::default()).expect("failed to initialize");
-    /// let output = phi3.complete(prompt).expect("failed to run inference");
+    /// let mut phi = Phi3::init(Phi3Config::default()).expect("failed to initialize");
+    /// let output = phi.complete(prompt).expect("failed to run inference");
     /// println!("{output}");
     /// ```
     ///
@@ -256,7 +261,7 @@ mod tests {
         let mut config = config();
         // Struggled to find a prompt that would be short where the model doesn't keep going
         // excessively so setting the sample length will only get the answer we expect.
-        config.sample_len = 2;
+        config.sample_len = 3;
         let mut phi3 = Phi3::init(config).expect("failed to init");
         let output = phi3.complete(prompt).expect("failed to run inference");
         assert_eq!(&output, "12");

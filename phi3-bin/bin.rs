@@ -26,37 +26,25 @@ enum CliCommand {
 #[derive(Args)]
 struct CompleteArgs {
     /// The prompt for Phi-3 to complete.
-    ///
-    /// Prompts are recommended to follow this format see
+    /// Prompts are recommended to follow a specific format, see
     /// https://huggingface.co/microsoft/Phi-3-mini-128k-instruct#chat-format for more details:
-    /// ```notrust
-    /// <|system|>
-    /// You are a helpful Rust development assistant.<|end|>
-    /// <|user|>
-    /// Explain all of Rust standard library's smart pointer types.<|end>
-    /// <|assistant|>
-    /// ```
     prompt: String,
 
     /// The max tokens to output.
-    ///
     /// If the output tokens reaches the sample_length inference will stop immediately and return
     /// the output, potentially even stopping mid word.
     #[arg(long)]
     sample_length: Option<usize>,
 
-    /// The randomness of the output.
-    ///
-    /// Must be a number between 0.0 and 1.0, where 0.0 is deterministic and 1.0 output will vary
-    /// durastically.
-    /// This should NOT be used in conjunction with `top_p`, they are exclusive of eachother.
+    /// The randomness of the output, must be a number between 0.0 and 1.0, where 0.0 is
+    /// deterministic and 1.0 output will vary drastically.
+    /// This should NOT be used in conjunction with `top_p`, they are exclusive of each other.
     #[arg(long)]
     temperature: Option<f64>,
 
     /// Used for nucleus sampling to limit the number of tokens considered for each step.
-    ///
     /// Most of the time temperature is all you'll need, this is for advanced use-cases.
-    /// This should NOT be used in conjunction with `temperature`, they are exclusive of eachother.
+    /// This should NOT be used in conjunction with `temperature`, they are exclusive of each other.
     #[arg(long)]
     top_p: Option<f64>,
 
@@ -75,13 +63,11 @@ struct CompleteArgs {
     seed: Option<u64>,
 
     /// Runs inference on the CPU, this is the default.
-    ///
     /// Only `--cpu` or `--gpu` should be provided, GPU will take priority if both are true.
     #[arg(long)]
     cpu: bool,
 
     /// Runs inference on the GPU, the default is CPU.
-    ///
     /// Only `--gpu` or `--cpu` should be provided, GPU will take priority if both are enabled.
     #[arg(long)]
     gpu: bool,
