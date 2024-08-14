@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["phi3-bin", "phi3-lib"]
+members = ["phi3-cli", "phi3-core"]
 
 [workspace.dependencies]
 candle-core = "0.6"

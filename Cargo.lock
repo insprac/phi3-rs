@@ -1444,18 +1444,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
 
 [[package]]
-name = "phi3-bin"
+name = "phi3-cli"
 version = "0.1.0"
 dependencies = [
  "candle-core",
  "clap",
- "phi3-lib",
+ "phi3-core",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "phi3-lib"
+name = "phi3-core"
 version = "0.1.0"
 dependencies = [
  "candle-core",
